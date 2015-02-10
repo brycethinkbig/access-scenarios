@@ -46,7 +46,7 @@ public class WebappServletContextListener implements ServletContextListener
 		filterRegistration.addMappingForUrlPatterns(null, false, "/*", "*");
 		
 		ServletRegistration registration = servletContext.addServlet("JobServlet", jobServlet);
-		registration.addMapping("/jobs", "/jobs*");
+		registration.addMapping("/jobs", "/jobs*", "/jobs/", "/jobs/*");
 		
 	}
 	

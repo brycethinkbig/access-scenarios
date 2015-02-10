@@ -46,10 +46,11 @@ public class JobServlet extends HttpServlet
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
 	{
+		PrintWriter writer = null;
 		try
 		{
 			String serviceName = getServiceName(req);
-			PrintWriter writer = resp.getWriter();
+			writer = resp.getWriter();
 			writer.println("about to launch job: " + serviceName);
 			
 			boolean success = launchService(req, writer);
@@ -58,6 +59,11 @@ public class JobServlet extends HttpServlet
 		}
 		catch (InterruptedException e)
 		{
+			if (writer != null)
+			{
+				writer.println("exception: " + e);
+				e.printStackTrace(writer);
+			}
 			throw new ServletException("error running job", e);
 		}
 	}
@@ -71,7 +77,7 @@ public class JobServlet extends HttpServlet
 		
 		if (!NullSafe.isEmpty(pathElements))
 		{
-			name = pathElements[pathElements.length];
+			name = pathElements[pathElements.length - 1];
 		}
 		
 		return name;
