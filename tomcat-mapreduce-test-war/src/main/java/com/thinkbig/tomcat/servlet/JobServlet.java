@@ -19,6 +19,7 @@ import com.thinkbig.tomcat.api.impl.WriteHBaseJobLauncherService;
 import com.thinkbig.tomcat.api.model.RandomReadHBaseConfig;
 import com.thinkbig.tomcat.api.model.ReadHBaseConfiguration;
 import com.thinkbig.tomcat.api.model.TomcatJobConfiguration;
+import com.thinkbig.tomcat.api.model.WriteHBaseConfig;
 import com.thinkbig.tomcat.util.NullSafe;
 
 public class JobServlet extends HttpServlet
@@ -118,6 +119,21 @@ public class JobServlet extends HttpServlet
 			
 			RandomReadHBaseJobLauncherService service = new RandomReadHBaseJobLauncherService();
 			RandomReadHBaseConfig config = new RandomReadHBaseConfig(tablename, columnFamily, inputDirectory, outputDirectory);
+			
+			result = service.launchJob(config);
+		}
+		else if (WriteHBaseJobLauncherService.class.getSimpleName().equalsIgnoreCase(serviceName))
+		{
+			final String inputDirectory = req.getParameter(PARAM_INPUT_DIR);
+			final String tablename = req.getParameter(PARAM_TABLE_NAME);
+			final String columnFamily = req.getParameter(PARAM_COLUMN_FAMILY);
+			
+			out.println("inputDirectory: " + inputDirectory);
+			out.println("tablename: " + tablename);
+			out.println("columnFamily: " + columnFamily);
+			
+			WriteHBaseJobLauncherService service = new WriteHBaseJobLauncherService();
+			WriteHBaseConfig config = new WriteHBaseConfig(inputDirectory, tablename, columnFamily);
 			
 			result = service.launchJob(config);
 		}
