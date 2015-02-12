@@ -41,13 +41,15 @@ public class WriteHBaseMapper extends Mapper<LongWritable, Text, Text, Text>
 		final String configTableName = config.get(OUTPUT_TABLENAME);
 		final String configColumnFamily = config.get(OUTPUT_COLUMN_FAMILY);
 		
-		if (!NullSafe.isEmpty(configTableName)) {
+		if (!NullSafe.isEmpty(configTableName)) 
+		{
 			tableName = configTableName;
 			columnFamily = Bytes.toBytes(configColumnFamily);
 		}
 		
 		table = hbaseConnection.getTable(tableName);
-		if (!hbaseConnection.tableExists(tableName)) {
+		if (!hbaseConnection.tableExists(tableName)) 
+		{
 			hbaseConnection.createTable(tableName, configColumnFamily);
 		}
 		

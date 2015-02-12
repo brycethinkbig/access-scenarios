@@ -145,6 +145,9 @@ public class JobServlet extends HttpServlet
 			final String inputDirectory = req.getParameter(PARAM_INPUT_DIR);
 			final String outputDirectory = req.getParameter(PARAM_OUTPUT_DIR);
 			
+			out.println("inputDirectory: " + inputDirectory);
+			out.println("outputDirectory: " + outputDirectory);
+			
 			DefaultJobLauncherService service = new DefaultJobLauncherService();
 			TomcatJobConfiguration config = new TomcatJobConfiguration(inputDirectory, outputDirectory);
 			
