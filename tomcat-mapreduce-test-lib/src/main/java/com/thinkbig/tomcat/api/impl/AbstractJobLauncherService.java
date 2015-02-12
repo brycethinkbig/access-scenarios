@@ -58,11 +58,15 @@ public abstract class AbstractJobLauncherService<T> implements JobLauncherServic
 	{
 		final Job job = Job.getInstance(config);
 		
-		if ("kerberos".equals(config.get("hbase.security.authentication"))) {
+		if ("kerberos".equals(config.get("hbase.security.authentication"))) 
+		{
 			logger.info("kerberos authentication method found in config");
-			try {
+			try 
+			{
 				User.getCurrent().obtainAuthTokenForJob(config, job);
-			} catch (InterruptedException e) {
+			}
+			catch (InterruptedException e) 
+			{
 				e.printStackTrace();
 			}
 		}
@@ -80,6 +84,8 @@ public abstract class AbstractJobLauncherService<T> implements JobLauncherServic
 		config.addResource("core-site.xml");
 		config.addResource("mapred-site.xml");
 		config.addResource("yarn-site.xml");
+		
+		User.getCurrent();
 		
 //		PrintWriter w = new PrintWriter(System.out);
 //		Configuration.dumpConfiguration(config, w);
