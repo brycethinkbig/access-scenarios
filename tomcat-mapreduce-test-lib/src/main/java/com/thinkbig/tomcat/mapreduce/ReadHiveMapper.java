@@ -13,6 +13,8 @@ import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 
+import com.thinkbig.tomcat.util.NullSafe;
+
 public class ReadHiveMapper extends Mapper<LongWritable, Text, Text, Text>
 {
 	public static final String DRIVER_NAME = "org.apache.hive.jdbc.HiveDriver";
@@ -49,7 +51,14 @@ public class ReadHiveMapper extends Mapper<LongWritable, Text, Text, Text>
 		
 		try
 		{
-			connection = DriverManager.getConnection(hiveUrl, hiveUser, hivePassword);
+			if (!NullSafe.isEmpty(hiveUser) && !NullSafe.isEmpty(hivePassword))
+			{
+				connection = DriverManager.getConnection(hiveUrl, hiveUser, hivePassword);
+			}
+			else
+			{
+				connection = DriverManager.getConnection(hiveUrl);
+			}
 		}
 		catch (SQLException e)
 		{
@@ -81,6 +90,11 @@ public class ReadHiveMapper extends Mapper<LongWritable, Text, Text, Text>
 	{
 		
 		String sql = value.toString();
+		if (NullSafe.isEmpty(sql))
+		{
+			return;
+		}
+		
 		keyOut.set(sql);
 		
 		try

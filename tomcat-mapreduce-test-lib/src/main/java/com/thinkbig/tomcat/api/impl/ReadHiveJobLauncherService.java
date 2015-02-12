@@ -63,26 +63,46 @@ public class ReadHiveJobLauncherService extends AbstractJobLauncherService<ReadH
 		Connection connection = null;
 		try
 		{
-			connection = DriverManager.getConnection(jobConfiguration.getHiveUrl());
+			if (!NullSafe.isEmpty(jobConfiguration.getHiveUser()) && !NullSafe.isEmpty(jobConfiguration.getHivePassword()))
+			{
+				connection = DriverManager.getConnection(
+												jobConfiguration.getHiveUrl(), 
+												jobConfiguration.getHiveUser(), 
+												jobConfiguration.getHivePassword()
+											);
+			}
+			else
+			{
+				connection = DriverManager.getConnection(jobConfiguration.getHiveUrl());
+			}
+			
 			Path input = new Path(jobConfiguration.getInputDirectory());
 			FileSystem fileSystem = input.getFileSystem(job.getConfiguration());
 			
 			FileStatus[] files = fileSystem.listStatus(input);
 			if (!NullSafe.isEmpty(files))
 			{
-				for (FileStatus status : files)
+				FileStatus status = files[0];
+				Path file = status.getPath();
+				FSDataInputStream in = fileSystem.open(file);
+				BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+				
+				System.out.println("about to read file... " + file.getName());
+				
+				String line = reader.readLine();
+				while (!NullSafe.isEmpty(line))
 				{
-					Path file = status.getPath();
-					FSDataInputStream in = fileSystem.open(file);
-					BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+					Statement statement = connection.createStatement();
 					
-					String line = null;
-					while ((line = reader.readLine()) != null)
-					{
-						Statement statement = connection.createStatement();
-						statement.execute(line);
-					}
+					System.out.println("locally executing statement.execute('" + line + "')...");
+					boolean hasResult = statement.execute(line);
+					System.out.println("hasResult: " + hasResult);
+					
+					statement.close();
+					line = reader.readLine();
 				}
+					
+				System.out.println("done reading file... " + file.getName());
 			}
 			
 		}
@@ -105,7 +125,7 @@ public class ReadHiveJobLauncherService extends AbstractJobLauncherService<ReadH
 			}
 		}
 		
-		return super.launchJob(jobConfiguration);
+		return super.runJob(job, jobConfiguration);
 	}
 	
 	public static void main(String[] args) throws IOException, InterruptedException
