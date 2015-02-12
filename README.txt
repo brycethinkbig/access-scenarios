@@ -38,6 +38,17 @@ show tables
 
 	The output of the Hive test is simple text, with the query executed, followed by the output of the query
 	A query that has multiple result records will have multiple lines output in the target file (1 per ResultSet record)
+
+	As a kick-started, the sample file: hive-table.csv is formatted to be imported as an external table as follows:
+
+~> hdfs dfs -mkdir external_table
+~> hdfs dfs -copyFromLocal hive-table.csv external_table/hive-table.csv
+~> hive
+
+hive > create external table some_existing_table (first_column string, second_column string) row format delimited fields terminated by ',' stored as textfile location '/user/cloudera/external_table';
+
+
+
 For web-app based access:
 	- deploy the tomcat-mapreduce-test-war-0.0.1-SNAPSHOT.war to a local tomcat server
 	- access the web app from it's context root, for example:
