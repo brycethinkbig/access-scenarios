@@ -22,12 +22,12 @@ public abstract class AbstractJobLauncherService<T> implements JobLauncherServic
 		
 		configureJob(job, jobConfiguration);
 		
-		return runJob(job);
+		return runJob(job, jobConfiguration);
 	}
 	
 	protected abstract void configureJob(Job job, T jobConfiguration) throws IOException, InterruptedException;
 	
-	public boolean runJob(Job job) throws IOException, InterruptedException
+	public boolean runJob(Job job, T jobConfiguration) throws IOException, InterruptedException
 	{
 		boolean success = false;
 		
