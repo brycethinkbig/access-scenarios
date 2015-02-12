@@ -15,9 +15,11 @@ import com.thinkbig.tomcat.api.JobLauncherService;
 import com.thinkbig.tomcat.api.impl.DefaultJobLauncherService;
 import com.thinkbig.tomcat.api.impl.RandomReadHBaseJobLauncherService;
 import com.thinkbig.tomcat.api.impl.ReadHBaseJobLauncherService;
+import com.thinkbig.tomcat.api.impl.ReadHiveJobLauncherService;
 import com.thinkbig.tomcat.api.impl.WriteHBaseJobLauncherService;
 import com.thinkbig.tomcat.api.model.RandomReadHBaseConfig;
 import com.thinkbig.tomcat.api.model.ReadHBaseConfiguration;
+import com.thinkbig.tomcat.api.model.ReadHiveConfiguration;
 import com.thinkbig.tomcat.api.model.TomcatJobConfiguration;
 import com.thinkbig.tomcat.api.model.WriteHBaseConfig;
 import com.thinkbig.tomcat.util.NullSafe;
@@ -35,6 +37,9 @@ public class JobServlet extends HttpServlet
 	private static final String PARAM_OUTPUT_DIR = "outputDirectory";
 	private static final String PARAM_TABLE_NAME = "tableName";
 	private static final String PARAM_COLUMN_FAMILY = "columnFamily";
+	private static final String PARAM_HIVE_URL = "hiveUrl";
+	private static final String PARAM_HIVE_USER = "hiveUser";
+	private static final String PARAM_HIVE_PASSWORD = "hivePassword";
 	
 	private JobLauncherService<TomcatJobConfiguration> jobService;
 	
@@ -134,6 +139,25 @@ public class JobServlet extends HttpServlet
 			
 			WriteHBaseJobLauncherService service = new WriteHBaseJobLauncherService();
 			WriteHBaseConfig config = new WriteHBaseConfig(inputDirectory, tablename, columnFamily);
+			
+			result = service.launchJob(config);
+		}
+		else if (ReadHiveJobLauncherService.class.getSimpleName().equalsIgnoreCase(serviceName))
+		{
+			final String hiveUrl = req.getParameter(PARAM_HIVE_URL);
+			final String hiveUser = req.getParameter(PARAM_HIVE_USER);
+			final String hivePassword = req.getParameter(PARAM_HIVE_PASSWORD);
+			final String inputDirectory = req.getParameter(PARAM_INPUT_DIR);
+			final String outputDirectory = req.getParameter(PARAM_OUTPUT_DIR);
+			
+			out.println("hiveUrl: " + hiveUrl);
+			out.println("hiveUser: " + hiveUser);
+			out.println("hivePassword: " + hivePassword);
+			out.println("inputDirectory: " + inputDirectory);
+			out.println("outputDirectory: " + outputDirectory);
+			
+			ReadHiveJobLauncherService service = new ReadHiveJobLauncherService();
+			ReadHiveConfiguration config = new ReadHiveConfiguration(hiveUrl, hiveUser, hivePassword, inputDirectory, outputDirectory);
 			
 			result = service.launchJob(config);
 		}

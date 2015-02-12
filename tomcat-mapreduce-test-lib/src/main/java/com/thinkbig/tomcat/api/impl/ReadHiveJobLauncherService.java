@@ -18,9 +18,16 @@ public class ReadHiveJobLauncherService extends AbstractJobLauncherService<ReadH
 	
 	public static void main(String[] args) throws IOException, InterruptedException
 	{
+		int index = 0;
+		final String hiveUrl = args[index++];
+		final String hiveUser = args[index++];
+		final String hivePassword = args[index++];
+		final String inputDirectory = args[index++];
+		final String outputDirectory = args[index++];
+		
 		
 		ReadHiveJobLauncherService service = new ReadHiveJobLauncherService();
-		ReadHiveConfiguration config = null;
+		ReadHiveConfiguration config = new ReadHiveConfiguration(hiveUrl, hiveUser, hivePassword, inputDirectory, outputDirectory);
 		
 		service.launchJob(config);
 		
