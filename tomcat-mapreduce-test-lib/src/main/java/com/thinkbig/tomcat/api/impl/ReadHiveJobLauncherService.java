@@ -54,6 +54,7 @@ public class ReadHiveJobLauncherService extends AbstractJobLauncherService<ReadH
 		
 		job.setMapperClass(ReadHiveMapper.class);
 		job.setNumReduceTasks(0);
+		job.setJarByClass(ReadHiveMapper.class);
 		
 	}
 	
