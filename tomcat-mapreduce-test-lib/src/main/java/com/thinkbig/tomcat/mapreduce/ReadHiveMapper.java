@@ -15,6 +15,8 @@ import org.apache.hadoop.mapreduce.Mapper;
 
 public class ReadHiveMapper extends Mapper<LongWritable, Text, Text, Text>
 {
+	public static final String DRIVER_NAME = "org.apache.hive.jdbc.HiveDriver";
+	
 	private static final String PREFIX = ReadHiveMapper.class.getSimpleName();
 	public static final String HIVE_URL = PREFIX + ".hiveUrl";
 	public static final String HIVE_USER = PREFIX + ".hiveUser";
@@ -29,6 +31,15 @@ public class ReadHiveMapper extends Mapper<LongWritable, Text, Text, Text>
 	protected void setup(Context context) throws IOException, InterruptedException
 	{
 		super.setup(context);
+		
+		try
+		{
+			Class.forName(DRIVER_NAME);
+		}
+		catch (ClassNotFoundException e)
+		{
+			throw new IllegalStateException("unable to load jdbc driver", e);
+		}
 		
 		final Configuration config = context.getConfiguration();
 		
