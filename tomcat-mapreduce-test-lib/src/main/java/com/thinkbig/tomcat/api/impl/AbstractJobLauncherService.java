@@ -3,6 +3,7 @@ package com.thinkbig.tomcat.api.impl;
 import java.io.IOException;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.hbase.security.User;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.yarn.conf.YarnConfiguration;
 import org.apache.log4j.Logger;
@@ -57,6 +58,14 @@ public abstract class AbstractJobLauncherService<T> implements JobLauncherServic
 	{
 		final Job job = Job.getInstance(config);
 		
+		if ("kerberos".equals(config.get("hbase.security.authentication"))) {
+			logger.info("kerberos authentication method found in config");
+			try {
+				User.getCurrent().obtainAuthTokenForJob(config, job);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 		logger.warn("job.user: " + job.getUser());
 		logger.warn("user.name: " + System.getProperty("user.name"));
 		
@@ -81,5 +90,4 @@ public abstract class AbstractJobLauncherService<T> implements JobLauncherServic
 		
 		return config;
 	}
-	
 }
