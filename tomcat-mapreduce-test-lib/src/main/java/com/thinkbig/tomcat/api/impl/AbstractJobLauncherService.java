@@ -6,6 +6,7 @@ import java.net.InetAddress;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.security.User;
 import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hadoop.yarn.conf.YarnConfiguration;
 import org.apache.log4j.Logger;
 
@@ -58,10 +59,10 @@ public abstract class AbstractJobLauncherService<T> implements JobLauncherServic
 	public Job createJob(Configuration config) throws IOException
 	{
 		String localhost = InetAddress.getLocalHost().getHostName();
-        config.set("hbase.myclient.keytab", "/var/run/wufiles/bdp/bdp.keytab");
-        config.set("hbase.myclient.principal", "bdp@CDH.PREPROD.WUDIP.COM");
-        org.apache.hadoop.security.UserGroupInformation.setConfiguration(config);
-        User.login(config, "hbase.myclient.keytab", "hbase.myclient.principal", localhost);
+		config.set("hbase.myclient.keytab", "/var/run/wufiles/bdp/bdp.keytab");
+		config.set("hbase.myclient.principal", "bdp@CDH.PREPROD.WUDIP.COM");
+		UserGroupInformation.setConfiguration(config);
+		User.login(config, "hbase.myclient.keytab", "hbase.myclient.principal", localhost);
 		final Job job = Job.getInstance(config);
 		
 		if ("kerberos".equals(config.get("hbase.security.authentication"))) 
@@ -90,8 +91,6 @@ public abstract class AbstractJobLauncherService<T> implements JobLauncherServic
 		config.addResource("core-site.xml");
 		config.addResource("mapred-site.xml");
 		config.addResource("yarn-site.xml");
-		
-		User.getCurrent();
 		
 //		PrintWriter w = new PrintWriter(System.out);
 //		Configuration.dumpConfiguration(config, w);
