@@ -12,11 +12,13 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.log4j.Logger;
 
 import com.thinkbig.tomcat.util.NullSafe;
 
 public class ReadHiveMapper extends Mapper<LongWritable, Text, Text, Text>
 {
+	protected final Logger logger = Logger.getLogger(getClass());
 	public static final String DRIVER_NAME = "org.apache.hive.jdbc.HiveDriver";
 	
 	private static final String PREFIX = ReadHiveMapper.class.getSimpleName();
@@ -32,6 +34,7 @@ public class ReadHiveMapper extends Mapper<LongWritable, Text, Text, Text>
 	@Override
 	protected void setup(Context context) throws IOException, InterruptedException
 	{
+		logger.info("Starting setup" + this.getClass());
 		super.setup(context);
 		
 		try
@@ -88,7 +91,7 @@ public class ReadHiveMapper extends Mapper<LongWritable, Text, Text, Text>
 	@Override
 	protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException
 	{
-		
+		logger.info("Starting mapper...");
 		String sql = value.toString();
 		if (NullSafe.isEmpty(sql))
 		{

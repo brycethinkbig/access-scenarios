@@ -13,6 +13,7 @@ import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.log4j.Logger;
 
 import com.thinkbig.tomcat.hbase.HBaseConnection;
 import com.thinkbig.tomcat.util.NullSafe;
@@ -25,6 +26,7 @@ import com.thinkbig.tomcat.util.NullSafe;
  */
 public class RandomReadHBaseMapper extends Mapper<LongWritable, Text, Text, LongWritable>
 {
+	protected final Logger logger = Logger.getLogger(getClass());
 	
 	public static final String TABLE_NAME = RandomReadHBaseMapper.class.getName() + ".tableName";
 	public static final String COLUMN_FAMILY = RandomReadHBaseMapper.class.getName() + ".columnFamily";
@@ -38,6 +40,7 @@ public class RandomReadHBaseMapper extends Mapper<LongWritable, Text, Text, Long
 	@Override
 	protected void setup(Context context) throws IOException, InterruptedException
 	{
+		logger.info("Starting setup" + this.getClass());
 		super.setup(context);
 		
 		HConnection connection = HConnectionManager.createConnection(context.getConfiguration());
@@ -59,7 +62,7 @@ public class RandomReadHBaseMapper extends Mapper<LongWritable, Text, Text, Long
 		}
 		
 		columnFamily = Bytes.toBytes(family);
-		
+		logger.info("Leaving setup");
 	}
 	
 	@Override
@@ -73,6 +76,7 @@ public class RandomReadHBaseMapper extends Mapper<LongWritable, Text, Text, Long
 	@Override
 	protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException
 	{
+		logger.info("Strting mapper...");
 		if (value.getLength() > 0)
 		{
 			final Get get = new Get(value.copyBytes());

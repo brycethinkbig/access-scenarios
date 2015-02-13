@@ -1,6 +1,7 @@
 package com.thinkbig.tomcat.api.impl;
 
 import java.io.IOException;
+import java.net.InetAddress;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.security.User;
@@ -56,6 +57,11 @@ public abstract class AbstractJobLauncherService<T> implements JobLauncherServic
 	
 	public Job createJob(Configuration config) throws IOException
 	{
+		String localhost = InetAddress.getLocalHost().getHostName();
+        config.set("hbase.myclient.keytab", "/var/run/wufiles/bdp/bdp.keytab");
+        config.set("hbase.myclient.principal", "bdp@CDH.PREPROD.WUDIP.COM");
+        org.apache.hadoop.security.UserGroupInformation.setConfiguration(config);
+        User.login(config, "hbase.myclient.keytab", "hbase.myclient.principal", localhost);
 		final Job job = Job.getInstance(config);
 		
 		if ("kerberos".equals(config.get("hbase.security.authentication"))) 

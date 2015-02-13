@@ -11,13 +11,14 @@ import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.log4j.Logger;
 
 import com.thinkbig.tomcat.hbase.HBaseConnection;
 import com.thinkbig.tomcat.util.NullSafe;
 
 public class WriteHBaseMapper extends Mapper<LongWritable, Text, Text, Text>
 {
-	
+	protected final Logger logger = Logger.getLogger(getClass());
 	public static final String OUTPUT_TABLENAME = WriteHBaseMapper.class.getSimpleName() + ".tableName";
 	public static final String OUTPUT_COLUMN_FAMILY = WriteHBaseMapper.class.getSimpleName() + ".columnFamily";
 	
@@ -31,6 +32,7 @@ public class WriteHBaseMapper extends Mapper<LongWritable, Text, Text, Text>
 	@Override
 	protected void setup(Context context) throws IOException, InterruptedException
 	{
+		logger.info("Starting setup" + this.getClass());
 		super.setup(context);
 		
 		final Configuration config = context.getConfiguration();
@@ -52,7 +54,7 @@ public class WriteHBaseMapper extends Mapper<LongWritable, Text, Text, Text>
 		{
 			hbaseConnection.createTable(tableName, configColumnFamily);
 		}
-		
+		logger.info("Leaving setup");
 	}
 	
 	@Override
@@ -65,6 +67,7 @@ public class WriteHBaseMapper extends Mapper<LongWritable, Text, Text, Text>
 	@Override
 	protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException
 	{
+		logger.info("Starting Mapper...");
 		byte[] rowKey = Bytes.toBytes(key.get());
 		Put put = new Put(rowKey);
 		put = put.add(columnFamily, QUALIFIER, value.copyBytes());
