@@ -15,7 +15,7 @@ public class RandomReadHBaseReducer extends Reducer<Text, LongWritable, Text, Lo
 	@Override
 	protected void setup(Context context) throws IOException, InterruptedException
 	{
-		logger.info("Starting setup" + this.getClass());
+		logger.info("Starting setup");
 		super.setup(context);
 	}
 	

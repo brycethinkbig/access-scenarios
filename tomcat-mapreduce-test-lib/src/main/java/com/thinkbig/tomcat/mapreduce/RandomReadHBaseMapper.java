@@ -40,7 +40,7 @@ public class RandomReadHBaseMapper extends Mapper<LongWritable, Text, Text, Long
 	@Override
 	protected void setup(Context context) throws IOException, InterruptedException
 	{
-		logger.info("Starting setup" + this.getClass());
+		logger.info("Starting setup");
 		super.setup(context);
 		
 		HConnection connection = HConnectionManager.createConnection(context.getConfiguration());
@@ -76,7 +76,7 @@ public class RandomReadHBaseMapper extends Mapper<LongWritable, Text, Text, Long
 	@Override
 	protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException
 	{
-		logger.info("Strting mapper...");
+		logger.info("Starting mapper...");
 		if (value.getLength() > 0)
 		{
 			final Get get = new Get(value.copyBytes());

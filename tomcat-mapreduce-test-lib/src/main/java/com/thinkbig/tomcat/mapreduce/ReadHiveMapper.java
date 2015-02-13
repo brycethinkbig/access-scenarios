@@ -34,7 +34,7 @@ public class ReadHiveMapper extends Mapper<LongWritable, Text, Text, Text>
 	@Override
 	protected void setup(Context context) throws IOException, InterruptedException
 	{
-		logger.info("Starting setup" + this.getClass());
+		logger.info("Starting setup");
 		super.setup(context);
 		
 		try
