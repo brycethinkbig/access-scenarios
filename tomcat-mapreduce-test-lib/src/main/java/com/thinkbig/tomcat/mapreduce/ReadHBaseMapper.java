@@ -28,7 +28,7 @@ public class ReadHBaseMapper extends TableMapper<Text, Text>
 	@Override
 	protected void setup(Context context) throws IOException, InterruptedException
 	{
-		logger.info("Starting setup" + this.getClass());
+		logger.info("Starting setup");
 		
 		Configuration config = context.getConfiguration();
 		
