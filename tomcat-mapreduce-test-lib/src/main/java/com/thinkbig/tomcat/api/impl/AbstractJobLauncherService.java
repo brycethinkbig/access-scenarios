@@ -88,8 +88,8 @@ public abstract class AbstractJobLauncherService<T> implements JobLauncherServic
 	{
 		Configuration config = new YarnConfiguration(new Configuration());
 		
-		config.addResource("hdfs-site.xml");
 		config.addResource("core-site.xml");
+		config.addResource("hdfs-site.xml");
 		config.addResource("mapred-site.xml");
 		config.addResource("yarn-site.xml");
 		
