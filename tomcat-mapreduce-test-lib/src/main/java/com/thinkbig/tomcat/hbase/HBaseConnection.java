@@ -11,6 +11,7 @@ import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.client.HConnection;
 import org.apache.hadoop.hbase.client.HTableInterface;
+import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
@@ -78,6 +79,28 @@ public class HBaseConnection implements Closeable
 			HColumnDescriptor family = new HColumnDescriptor(columnFamily);
 			table.addFamily(family);
 			admin.createTable(table);
+		}
+		catch (Exception e)
+		{
+			final String message = "error creating table: " + tablename;
+			logger.log(Level.WARN, message, e);
+			throw new DatastoreConnectionException(message, e);
+		}
+		finally
+		{
+			close(admin);
+		}
+	}
+	
+	public void deleteTable(String tablename) throws DatastoreConnectionException
+	{
+		HBaseAdmin admin = null;
+		try
+		{
+			final byte[] name = Bytes.toBytes(tablename);
+			admin = getAdmin();
+			admin.disableTable(name);
+			admin.deleteTable(name);
 		}
 		catch (Exception e)
 		{

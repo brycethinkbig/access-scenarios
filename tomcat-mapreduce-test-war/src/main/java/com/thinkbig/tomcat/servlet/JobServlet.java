@@ -13,10 +13,12 @@ import org.apache.log4j.Logger;
 
 import com.thinkbig.tomcat.api.JobLauncherService;
 import com.thinkbig.tomcat.api.impl.DefaultJobLauncherService;
+import com.thinkbig.tomcat.api.impl.LocalReadHBaseJobLauncherService;
 import com.thinkbig.tomcat.api.impl.RandomReadHBaseJobLauncherService;
 import com.thinkbig.tomcat.api.impl.ReadHBaseJobLauncherService;
 import com.thinkbig.tomcat.api.impl.ReadHiveJobLauncherService;
 import com.thinkbig.tomcat.api.impl.WriteHBaseJobLauncherService;
+import com.thinkbig.tomcat.api.model.LocalReadHBaseConfig;
 import com.thinkbig.tomcat.api.model.RandomReadHBaseConfig;
 import com.thinkbig.tomcat.api.model.ReadHBaseConfiguration;
 import com.thinkbig.tomcat.api.model.ReadHiveConfiguration;
@@ -158,6 +160,19 @@ public class JobServlet extends HttpServlet
 			
 			ReadHiveJobLauncherService service = new ReadHiveJobLauncherService();
 			ReadHiveConfiguration config = new ReadHiveConfiguration(hiveUrl, hiveUser, hivePassword, inputDirectory, outputDirectory);
+			
+			result = service.launchJob(config);
+		}
+		else if (LocalReadHBaseJobLauncherService.class.getSimpleName().equalsIgnoreCase(serviceName))
+		{
+			final String tablename = req.getParameter(PARAM_TABLE_NAME);
+			final String columnFamily = req.getParameter(PARAM_COLUMN_FAMILY);
+			
+			out.println("tablename: " + tablename);
+			out.println("columnFamily: " + columnFamily);
+			
+			LocalReadHBaseJobLauncherService service = new LocalReadHBaseJobLauncherService();
+			LocalReadHBaseConfig config = new LocalReadHBaseConfig(tablename, columnFamily);
 			
 			result = service.launchJob(config);
 		}
