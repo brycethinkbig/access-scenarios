@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.security.User;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.security.UserGroupInformation;
@@ -85,12 +86,14 @@ public abstract class AbstractJobLauncherService<T> implements JobLauncherServic
 	
 	public Configuration createConfiguration() throws IOException
 	{
-		YarnConfiguration config = new YarnConfiguration(new Configuration());
+		Configuration config = new YarnConfiguration(new Configuration());
 		
 		config.addResource("hdfs-site.xml");
 		config.addResource("core-site.xml");
 		config.addResource("mapred-site.xml");
 		config.addResource("yarn-site.xml");
+		
+		config = HBaseConfiguration.create(config);
 		
 //		PrintWriter w = new PrintWriter(System.out);
 //		Configuration.dumpConfiguration(config, w);
