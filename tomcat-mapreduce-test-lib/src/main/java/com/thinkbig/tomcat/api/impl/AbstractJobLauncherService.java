@@ -52,32 +52,38 @@ public abstract class AbstractJobLauncherService<T> implements JobLauncherServic
 		return success;
 	}
 	
-	public Job createJob() throws IOException
+	public Job createJob() throws IOException, InterruptedException
 	{
 		return createJob(createConfiguration());
 	}
 	
-	public Job createJob(Configuration config) throws IOException
+	public Job createJob(Configuration config) throws IOException, InterruptedException
 	{
-		String localhost = InetAddress.getLocalHost().getHostName();
-		config.set("hbase.myclient.keytab", "/var/run/wufiles/bdp/bdp.keytab");
-		config.set("hbase.myclient.principal", "bdp@CDH.PREPROD.WUDIP.COM");
-		UserGroupInformation.setConfiguration(config);
-		User.login(config, "hbase.myclient.keytab", "hbase.myclient.principal", localhost);
+		final String localhost = InetAddress.getLocalHost().getHostName();
+		final String principal = "bdp@CDH.PREPROD.WUDIP.COM";
+		final String keytab = "/var/run/wufiles/bdp/bdp.keytab";
+		
+		final boolean kerberos = "kerberos".equals(config.get("hbase.security.authentication"));
+		
+		config.set("hbase.myclient.keytab", keytab);
+		config.set("hbase.myclient.principal", principal);
+		
+		if (kerberos)
+		{
+			// this is essentially a kinit: (apparently)
+			logger.info("kerberos authentication method found in config");
+			UserGroupInformation.setConfiguration(config);
+			UserGroupInformation.loginUserFromKeytab(principal, keytab);
+			User.login(config, "hbase.myclient.keytab", "hbase.myclient.principal", localhost);
+		}
+		
 		final Job job = Job.getInstance(config);
 		
-		if ("kerberos".equals(config.get("hbase.security.authentication"))) 
+		if (kerberos) 
 		{
-			logger.info("kerberos authentication method found in config");
-			try 
-			{
-				User.getCurrent().obtainAuthTokenForJob(config, job);
-			}
-			catch (InterruptedException e) 
-			{
-				e.printStackTrace();
-			}
+			User.getCurrent().obtainAuthTokenForJob(config, job);
 		}
+		
 		logger.warn("job.user: " + job.getUser());
 		logger.warn("user.name: " + System.getProperty("user.name"));
 		
