@@ -38,6 +38,7 @@ public class ReadHBaseJobLauncherService extends AbstractJobLauncherService<Read
 		job.setReducerClass(ReadHBaseReducer.class);
 		job.setJarByClass(ReadHBaseMapper.class);
 		
+		logger.warn("about to invoke TableMapReduceUtil.initTableMapperJob");
 		TableMapReduceUtil.initTableMapperJob(
 				tablename, 
 				scan, 

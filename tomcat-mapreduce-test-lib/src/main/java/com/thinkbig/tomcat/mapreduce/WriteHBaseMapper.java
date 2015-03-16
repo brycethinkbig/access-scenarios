@@ -22,12 +22,12 @@ public class WriteHBaseMapper extends Mapper<LongWritable, Text, Text, Text>
 	public static final String OUTPUT_TABLENAME = WriteHBaseMapper.class.getSimpleName() + ".tableName";
 	public static final String OUTPUT_COLUMN_FAMILY = WriteHBaseMapper.class.getSimpleName() + ".columnFamily";
 	
-	private HBaseConnection hbaseConnection;
-	private HTableInterface table;
+	protected HBaseConnection hbaseConnection;
+	protected HTableInterface table;
 	
-	private String tableName = "file_lines";
-	private byte[] columnFamily = Bytes.toBytes("lines");
-	private static final byte[] QUALIFIER = Bytes.toBytes("value");
+	protected String tableName = "file_lines";
+	protected byte[] columnFamily = Bytes.toBytes("lines");
+	protected static final byte[] QUALIFIER = Bytes.toBytes("value");
 	
 	@Override
 	protected void setup(Context context) throws IOException, InterruptedException

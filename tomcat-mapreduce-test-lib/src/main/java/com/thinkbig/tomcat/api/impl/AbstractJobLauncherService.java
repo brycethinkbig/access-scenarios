@@ -60,10 +60,11 @@ public abstract class AbstractJobLauncherService<T> implements JobLauncherServic
 	public Job createJob(Configuration config) throws IOException, InterruptedException
 	{
 		final String localhost = InetAddress.getLocalHost().getHostName();
-		final String principal = "bdp@CDH.PREPROD.WUDIP.COM";
+		final String principal = "bdp/" + localhost + "@CDH.PREPROD.WUDIP.COM"; //"bdp@CDH.PREPROD.WUDIP.COM";
 		final String keytab = "/var/run/wufiles/bdp/bdp.keytab";
 		
 		final boolean kerberos = "kerberos".equals(config.get("hbase.security.authentication"));
+		logger.warn("kerberios enabled: " + kerberos);
 		
 		config.set("hbase.myclient.keytab", keytab);
 		config.set("hbase.myclient.principal", principal);
@@ -71,13 +72,16 @@ public abstract class AbstractJobLauncherService<T> implements JobLauncherServic
 		if (kerberos)
 		{
 			// this is essentially a kinit: (apparently)
-			logger.info("kerberos authentication method found in config");
+			logger.warn("kerberos authentication method found in config");
 			UserGroupInformation.setConfiguration(config);
+			logger.warn("about to login user from keytab");
 			UserGroupInformation.loginUserFromKeytab(principal, keytab);
+			logger.warn("about to login user for hbase");
 			User.login(config, "hbase.myclient.keytab", "hbase.myclient.principal", localhost);
 		}
 		
 		final Job job = Job.getInstance(config);
+		job.setJobName(getClass().getSimpleName());
 		
 		if (kerberos) 
 		{
