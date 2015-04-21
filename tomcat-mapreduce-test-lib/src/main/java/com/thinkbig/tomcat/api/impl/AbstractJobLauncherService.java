@@ -20,7 +20,7 @@ public abstract class AbstractJobLauncherService<T> implements JobLauncherServic
 	protected final Logger logger = Logger.getLogger(getClass());
 	
 	
-	public boolean launchJob(final T jobConfiguration) throws IOException, InterruptedException
+	public boolean launchJob(final T jobConfiguration, boolean isTest) throws IOException, InterruptedException
 	{
 		final Job job = createJob();
 		

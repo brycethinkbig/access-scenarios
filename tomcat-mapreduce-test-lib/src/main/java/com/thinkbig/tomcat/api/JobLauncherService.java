@@ -4,5 +4,5 @@ import java.io.IOException;
 
 public interface JobLauncherService<T>
 {
-	boolean launchJob(T jobConfiguration) throws IOException, InterruptedException;
+	boolean launchJob(T jobConfiguration, boolean forTest) throws IOException, InterruptedException;
 }
