@@ -53,7 +53,7 @@ public class DefaultJobLauncherService extends AbstractJobLauncherService<Tomcat
 		DefaultJobLauncherService service = new DefaultJobLauncherService();
 		
 		System.out.println("launching job");
-		boolean success = service.launchJob(jobConf);
+		boolean success = service.launchJob(jobConf, false);
 		System.out.println("job success: " + success);
 	}
 
