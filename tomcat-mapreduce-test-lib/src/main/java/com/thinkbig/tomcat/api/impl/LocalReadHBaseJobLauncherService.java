@@ -82,7 +82,7 @@ public class LocalReadHBaseJobLauncherService extends AbstractJobLauncherService
 		LocalReadHBaseConfig config = new LocalReadHBaseConfig(tablename, columnFamily);
 		LocalReadHBaseJobLauncherService service = new LocalReadHBaseJobLauncherService();
 		
-		service.launchJob(config);
+		service.launchJob(config, true);
 	}
 	
 	
